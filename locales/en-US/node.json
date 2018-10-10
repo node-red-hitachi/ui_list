@@ -1,0 +1,16 @@
+{
+    "ui_list" : {
+        "label" : {
+            "group" : "Group",
+            "size" : "Size",
+            "name" : "Name",
+            "click" : "Clicking an item sends it to output port",
+            "html" : "Allow HTML in displayed text"
+        },
+        "type" : {
+            "one" : "Single-line",
+            "two" : "Two-line",
+            "three" : "Three-line"
+        }
+    }
+}
