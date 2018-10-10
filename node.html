@@ -1,0 +1,108 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="ui_list">
+    <div class="form-row" id="template-row-group">
+        <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
+        <input type="text" id="node-input-group">
+    </div>
+    <div class="form-row" id="template-row-size">
+        <label><i class="fa fa-object-group"></i> Size</label>
+        <input type="hidden" id="node-input-width">
+        <input type="hidden" id="node-input-height">
+        <button class="editor-button" id="node-input-size"></button>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ui_list">
+    <p>Node-RED widget node for showing items list</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload<span class="property-type">array</span></dt>
+        <dd>Array of objects containing following properties:
+            <ul>
+                <li><b>title</b> - title of list the item,</li>
+                <li><b>description</b> - description of the item.</li>
+            </ul>
+        </dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload<span class="property-type">object</span></dt>
+        <dd>When send button for a item is clicked, selected object is send to output port.
+        </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This UI widget can be used to display an items array in dashboard.</p>
+    <p>Items array is passwd by <code>msg.payload</code>.  It consists of object containing <code>title</code> and <code>description</code> property.</p>
+    <p>When clicking send button shown right side of each item, the widget sends selected item to output port.</p>
+
+</script>
+
+<script type="text/javascript">
+    function mk_conf(NAME) {
+
+        var ICON = "icon.png";
+
+        var conf = {
+            category: 'dashboard',
+            color: 'rgb( 63, 173, 181)',
+            defaults: {
+                group: {type: 'ui_group', required:true},
+                name: {value: ''},
+                order: {value: 0},
+                width: {
+                    value: 0,
+                    validate: function(v) {
+                        var valid = true
+                        var width = v||0;
+                        var currentGroup = $('#node-input-group').val()|| this.group;
+                        var groupNode = RED.nodes.node(currentGroup);
+                        valid = !groupNode || +width <= +groupNode.width;
+                        $("#node-input-size").toggleClass("input-error",!valid);
+                        return valid;
+                    }},
+                height: {value: 0}
+            },
+            inputs:1,
+            outputs:1,
+            icon: ICON,
+            paletteLabel: NAME,
+            label: function() { return this.name || NAME; },
+            oneditprepare: function() {
+                $("#node-input-size").elementSizer({
+                    width: "#node-input-width",
+                    height: "#node-input-height",
+                    group: "#node-input-group"
+                });
+            },
+            oneditsave: function() {
+            },
+            oneditresize: function(size) {
+            }
+        };
+        return conf;
+    };
+
+    RED.nodes.registerType("ui_list", mk_conf("list"));
+</script>
