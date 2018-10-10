@@ -15,17 +15,22 @@
  **/
 
 module.exports = function(RED) {
-    var HTML = String.raw`
+    function HTML(allowClick) {
+	var click = String.raw`ng-click="click(item)"`;
+	var html = String.raw`
 <md-list>
-    <md-list-item class="md-2-line" ng-repeat="item in items()">
+    <md-list-item class="md-2-line" ng-repeat="item in items()"`
+	+(allowClick ? click : "")
+	+String.raw`>
          <div class="md-list-item-text">
             <h3>{{item.title}}</h3>
             <p>{{item.description}}</p>
         </div>
-        <md-button aria-label="send" ng-click="click(item)"><i class="fa fa-send"></i></md-button>
    </md-list-item>
 </md-list>
 `;
+	return html;
+    };
 
     var ui = undefined;
     function ListNode(config) {
@@ -35,11 +40,12 @@ module.exports = function(RED) {
                 ui = RED.require("node-red-dashboard")(RED);
             }
             RED.nodes.createNode(this, config);
+	    var html = HTML(config.allowClick);
             var done = ui.addWidget({
                 node: node,
                 width: config.width,
                 height: config.height,
-                format: HTML,
+                format: html,
                 templateScope: "local",
                 group: config.group,
                 emitOnlyNewValues: false,
