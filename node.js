@@ -16,9 +16,9 @@
 
 module.exports = function(RED) {
     var line2class = {
-        "one" : "",
-        "two" : "class=\"md-2-line\"",
-        "three" : "class=\"md-3-line\""
+        "one" : null,
+        "two" : "md-2-line",
+        "three" : "md-3-line"
     };
 
     function HTML(config) {
@@ -26,30 +26,32 @@ module.exports = function(RED) {
         var allowHTML = config.allowHTML;
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
+        var classes = line_class ? [line_class] : [];
 	var click = String.raw`ng-click="click(item)"`;
         var title = (allowHTML ? "<span ng-bind-html=\"item.title\"></span>" : "{{item.title}}");
         var desc = (allowHTML ? "<span ng-bind-html=\"item.description\"></span>" : "{{item.description}}");
+        var body = null;
         if (line_type === "one") {
-            var html = String.raw`
-<md-list>
-    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()" `
-	+(allowClick ? click : "")
-	+String.raw`>
+            body = String.raw`
         <span>` +title +String.raw`</span>
-   </md-list-item>
-</md-list>
 `;
-            return html;
         }
-	var html = String.raw`
-<md-list>
-    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()" `
-	+(allowClick ? click : "")
-	+String.raw`>
-         <div class="md-list-item-text">
+        else {
+            body = String.raw`
+        <div class="md-list-item-text">
             <h3>` +title +String.raw`</h3>
             <p>` +desc +String.raw`</p>
         </div>
+`;
+        }
+        var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=""]) +"\"") : "";
+	var html = String.raw`
+<md-list>
+    <md-list-item ` +class_decl +String.raw` ng-repeat="item in items()" `
+	    +(allowClick ? click : "")
+	    +String.raw`>`
+            +body
+            + String.raw`
    </md-list-item>
 </md-list>
 `;

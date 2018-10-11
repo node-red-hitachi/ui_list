@@ -5,7 +5,8 @@
             "size" : "Size",
             "name" : "Name",
             "click" : "Clicking an item sends it to output port",
-            "html" : "Allow HTML in displayed text"
+            "html" : "Allow HTML in displayed text",
+            "icon" : "Show Avatar Icon"
         },
         "type" : {
             "one" : "Single-line",
