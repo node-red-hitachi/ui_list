@@ -32,7 +32,7 @@ module.exports = function(RED) {
         if (line_type === "one") {
             var html = String.raw`
 <md-list>
-    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()"`
+    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()" `
 	+(allowClick ? click : "")
 	+String.raw`>
         <span>` +title +String.raw`</span>
@@ -43,7 +43,7 @@ module.exports = function(RED) {
         }
 	var html = String.raw`
 <md-list>
-    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()"`
+    <md-list-item ` +line_class +String.raw` ng-repeat="item in items()" `
 	+(allowClick ? click : "")
 	+String.raw`>
          <div class="md-list-item-text">
