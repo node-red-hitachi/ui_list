@@ -26,10 +26,6 @@
         <button class="editor-button" id="node-input-size"></button>
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui_list.label.name"></span></label>
-        <input type="text" id="node-input-name">
-    </div>
-    <div class="form-row">
         <label for="type-select"><i class="fa fa-bars"></i> List Type</label>
         <select id="type-select">
             <option value="one" data-i18n="ui_list.type.one"></option>
@@ -48,10 +44,19 @@
         <input type="checkbox" id="node-input-allowHTML" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-allowHTML" style="width: 70%;"><span data-i18n="ui_list.label.html"></span></label>
     </div>
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-showIcon" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-showIcon" style="width: 70%;"><span data-i18n="ui_list.label.icon"></span></label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ui_list.label.name"></span></label>
+        <input type="text" id="node-input-name">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="ui_list">
-    <p>Node-RED widget node for showing items list</p>
+    <p>Node-RED widget node for displaying items list</p>
 
     <h3>Inputs</h3>
     <dl class="message-properties">
@@ -60,6 +65,8 @@
             <ul>
                 <li><b>title</b> - title of list the item,</li>
                 <li><b>description</b> - description of the item.</li>
+                <li><b>icon</b> - URL of icon (optional),</li>
+                <li><b>icon_name</b> - font icon name (optional).</li>
             </ul>
         </dd>
     </dl>
@@ -74,8 +81,9 @@
     <h3>Details</h3>
     <p>This UI widget can be used to display an items array in dashboard.</p>
     <p>Items array is passwd by <code>msg.payload</code>.  It consists of object containing <code>title</code> and <code>description</code> property.</p>
-    <p>When clicking send button shown right side of each item, the widget sends selected item to output port.</p>
-    <p>If <b>Allow HTML in displayed text</b> checkbox is checked, HTML tags can be used in <code>title</code> and <code>description</code>.</p>
+    <p>If <b>Clicking an item sends it to output port</b> checkbox is selected, the widget sends selected item to output port if clicked.</p>
+    <p>If <b>Allow HTML in displayed text</b> checkbox is selected, HTML tags can be used in <code>title</code> and <code>description</code>.</p>
+    <p>If <b>Show Avatar Icon</code> checkbox is selected, icon is shown on the left side of each item.  Icon can be specified by <code>icon</code> or <code>icon_name</code> propeety.  <code>icon</code> specifies URL of icon file.  <code>icon_name</code> specifies icon name of font icons. <code>icon</code> has precedence over <code>icon_name</code>.</b>
 </script>
 
 <script type="text/javascript">
@@ -104,7 +112,8 @@
                 height: {value: 0},
                 lineType: {value: "two" },
                 allowClick: {value: true},
-                allowHTML: {value: false}
+                allowHTML: {value: false},
+                showIcon: {value: false}
             },
             inputs:1,
             outputs:1,
