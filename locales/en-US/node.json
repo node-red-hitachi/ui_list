@@ -7,8 +7,7 @@
             "list" : "List Type",
             "action" : "Action",
             "click" : "Clicking an item sends it to output port",
-            "html" : "Allow HTML in displayed text",
-            "icon" : "Show Avatar Icon"
+            "html" : "Allow HTML in displayed text"
         },
         "type" : {
             "one" : "Single-line",

@@ -26,32 +26,28 @@ module.exports = function(RED) {
         var allowClick = (actionType === "click");
         var allowCheck = (actionType === "check");
         var allowHTML = config.allowHTML;
-        var showIcon = config.showIcon;
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
         var classes = line_class ? [line_class] : [];
 	var click = String.raw`ng-click="click(item)"`;
         var title = (allowHTML ? String.raw`<span ng-bind-html="item.title"></span>` : String.raw`{{item.title}}`);
         var desc = (allowHTML ? String.raw`<span ng-bind-html="item.description"></span>` : String.raw`{{item.description}}`);
-        var icon = "";
-        if (showIcon) {
-            icon = String.raw`
-        <img src="{{item.icon}}" class="md-avatar" ng-if="(item.icon != undefined)">
-        <md-icon aria-label="{{item.desc}}" ng-if="(item.icon == undefined) && (item.icon_name != undefined)"><ui-icon icon="{{item.icon_name}}"></ui-icon></md-icon>
-        <md-icon class="md-avatar-icon" aria-label="{{item.desc}}" ng-if="(item.icon == undefined) && (item.icon_name == undefined)"></md-icon>
+        var icon = String.raw`
+        <img src="{{item.icon}}" class="md-avatar" ng-if="(item.icon !== undefined) && (item.icon !== null)">
+        <md-icon aria-label="{{item.desc}}" ng-if="(item.icon === undefined) && (item.icon_name !== undefined)"><ui-icon icon="{{item.icon_name}}"></ui-icon></md-icon>
+        <md-icon class="md-avatar-icon" aria-label="{{item.desc}}" ng-if="(item.icon === null) && (item.icon_name === undefined)"></md-icon>
 `;
-        }
         var body = null;
         if (line_type === "one") {
             body = String.raw`
-        <p>` +title +String.raw`</p>
+        <p>${title}</p>
 `;
         }
         else {
             body = String.raw`
         <div class="md-list-item-text">
-            <h3>` +title +String.raw`</h3>
-            <p>` +desc +String.raw`</p>
+            <h3>${title}</h3>
+            <p>${desc}</p>
         </div>
 `;
         }
@@ -61,13 +57,10 @@ module.exports = function(RED) {
         var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=" "]) +"\"") : "";
 	var html = String.raw`
 <md-list>
-    <md-list-item aria-label="{{item.desc}}" ` +class_decl +String.raw` ng-repeat="item in msg.items" `
-	    +(allowClick ? click : "")
-	    +String.raw`>`
-            +icon
-            +body
-            +(allowCheck ? checkbox : "")
-            + String.raw`
+    <md-list-item aria-label="{{item.desc}}" ${class_decl} ng-repeat="item in msg.items" ${(allowClick ? click : "")}>
+${icon}
+${body}
+${(allowCheck ? checkbox : "")}
    </md-list-item>
 </md-list>
 `;
