@@ -26,7 +26,7 @@
         <button class="editor-button" id="node-input-size"></button>
     </div>
     <div class="form-row">
-        <label for="type-select"><i class="fa fa-bars"></i> List Type</label>
+        <label for="type-select"><i class="fa fa-bars"></i> <span data-i18n="ui_list.label.list"></span></label>
         <select id="type-select">
             <option value="one" data-i18n="ui_list.type.one"></option>
             <option value="two" data-i18n="ui_list.type.two"></option>
@@ -35,9 +35,13 @@
         <input type="hidden" id="node-input-lineType">
     </div>
     <div class="form-row">
-        <label>&nbsp;</label>
-        <input type="checkbox" id="node-input-allowClick" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-allowClick" style="width: 70%;"><span data-i18n="ui_list.label.click"></span></label>
+        <label for="action-select"><i class="fa fa-hand-pointer-o"></i> <span data-i18n="ui_list.label.action"></span></label>
+        <select id="action-select">
+            <option value="none" data-i18n="ui_list.action.none"></option>
+            <option value="click" data-i18n="ui_list.action.click"></option>
+            <option value="check" data-i18n="ui_list.action.check"></option>
+        </select>
+        <input type="hidden" id="node-input-actionType">
     </div>
     <div class="form-row">
         <label>&nbsp;</label>
@@ -64,7 +68,7 @@
         <dd>Array of objects containing following properties:
             <ul>
                 <li><b>title</b> - title of list the item,</li>
-                <li><b>description</b> - description of the item.</li>
+                <li><b>description</b> - description of the item. optional if line type is <b>Single-line</b>.</li>
                 <li><b>icon</b> - URL of icon (optional),</li>
                 <li><b>icon_name</b> - font icon name (optional).</li>
             </ul>
@@ -74,16 +78,22 @@
     <h3>Outputs</h3>
     <dl class="message-properties">
         <dt>payload<span class="property-type">object</span></dt>
-        <dd>When send button for a item is clicked, selected object is send to output port.
+        <dd>When item is clicked or checked, corresponding object is send to output port.
         </dd>
     </dl>
 
     <h3>Details</h3>
     <p>This UI widget can be used to display an items array in dashboard.</p>
-    <p>Items array is passwd by <code>msg.payload</code>.  It consists of object containing <code>title</code> and <code>description</code> property.</p>
-    <p>If <b>Clicking an item sends it to output port</b> checkbox is selected, the widget sends selected item to output port if clicked.</p>
+    <p>Items array is passwd by <code>msg.payload</code>.  It consists of object containing <code>title</code>, <code>description</code>, <code>icon</code>, and <code>icon_name</code> properties.  <code>icon</code> and <code>icon_name</code> properties are optional.</p>
+    <p>Type of item display can be selected by <code>List Type</code> selector.</p>
+    <p>An action to be taken for an item can be selected by <code>Action</code> selector:</p>
+    <ul>
+        <li><b>none</b> - No action is performed,</li>
+        <li><b>click to send an item</b> - sends an item to output port if clicked,</li>
+        <li><b>checkbox to select items</b> - sends an item to output port if checkbox is changed.  Checkbox state is included in <code>isChecked</code> flag of outputted payload object.</li>
+    </ul>
     <p>If <b>Allow HTML in displayed text</b> checkbox is selected, HTML tags can be used in <code>title</code> and <code>description</code>.</p>
-    <p>If <b>Show Avatar Icon</code> checkbox is selected, icon is shown on the left side of each item.  Icon can be specified by <code>icon</code> or <code>icon_name</code> propeety.  <code>icon</code> specifies URL of icon file.  <code>icon_name</code> specifies icon name of font icons. <code>icon</code> has precedence over <code>icon_name</code>.</b>
+    <p>If <b>Show Avatar Icon</b> checkbox is selected, icon is shown on the left side of each item.  Icon can be specified by <code>icon</code> or <code>icon_name</code> propeety.  <code>icon</code> specifies URL of icon file.  <code>icon_name</code> specifies icon name of font icons. <code>icon</code> has precedence over <code>icon_name</code>.</b>
 </script>
 
 <script type="text/javascript">
@@ -111,7 +121,7 @@
                     }},
                 height: {value: 0},
                 lineType: {value: "two" },
-                allowClick: {value: true},
+                actionType: {value: "none" },
                 allowHTML: {value: false},
                 showIcon: {value: false}
             },
@@ -126,12 +136,20 @@
                     height: "#node-input-height",
                     group: "#node-input-group"
                 });
+
                 $("#type-select").change(function() {
                     var val = $("#type-select").val();
                     $("#node-input-lineType").val(val);
                 });
                 $("#type-select").val(this.lineType);
                 $("#type-select").change();
+
+                $("#action-select").change(function() {
+                    var val = $("#action-select").val();
+                    $("#node-input-actionType").val(val);
+                });
+                $("#action-select").val(this.actionType);
+                $("#action-select").change();
             },
             oneditsave: function() {
             },

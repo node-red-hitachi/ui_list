@@ -4,6 +4,8 @@
             "group" : "Group",
             "size" : "Size",
             "name" : "Name",
+            "list" : "List Type",
+            "action" : "Action",
             "click" : "Clicking an item sends it to output port",
             "html" : "Allow HTML in displayed text",
             "icon" : "Show Avatar Icon"
@@ -12,6 +14,11 @@
             "one" : "Single-line",
             "two" : "Two-line",
             "three" : "Three-line"
+        },
+        "action" : {
+            "none" : "no action",
+            "click" : "click to send item",
+            "check" : "checkbox to send changed item"
         }
     }
 }

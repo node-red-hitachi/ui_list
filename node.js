@@ -22,20 +22,22 @@ module.exports = function(RED) {
     };
 
     function HTML(config) {
-        var allowClick = config.allowClick;
+        var actionType = config.actionType;
+        var allowClick = (actionType === "click");
+        var allowCheck = (actionType === "check");
         var allowHTML = config.allowHTML;
         var showIcon = config.showIcon;
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
         var classes = line_class ? [line_class] : [];
 	var click = String.raw`ng-click="click(item)"`;
-        var title = (allowHTML ? "<span ng-bind-html=\"item.title\"></span>" : "{{item.title}}");
-        var desc = (allowHTML ? "<span ng-bind-html=\"item.description\"></span>" : "{{item.description}}");
+        var title = (allowHTML ? String.raw`<span ng-bind-html="item.title"></span>` : String.raw`{{item.title}}`);
+        var desc = (allowHTML ? String.raw`<span ng-bind-html="item.description"></span>` : String.raw`{{item.description}}`);
         var icon = "";
         if (showIcon) {
             icon = String.raw`
         <img src="{{item.icon}}" class="md-avatar" ng-if="(item.icon != undefined)">
-        <md-icon class="nr-list-icon" aria-label="{{item.desc}}" ng-if="(item.icon == undefined) && (item.icon_name != undefined)"><ui-icon icon="{{item.icon_name}}"></ui-icon></md-icon>
+        <md-icon aria-label="{{item.desc}}" ng-if="(item.icon == undefined) && (item.icon_name != undefined)"><ui-icon icon="{{item.icon_name}}"></ui-icon></md-icon>
         <md-icon class="md-avatar-icon" aria-label="{{item.desc}}" ng-if="(item.icon == undefined) && (item.icon_name == undefined)"></md-icon>
 `;
         }
@@ -53,20 +55,18 @@ module.exports = function(RED) {
         </div>
 `;
         }
+        var checkbox = String.raw`
+        <md-checkbox class="md-secondary" ng-model="item.isChecked" ng-change="click(item)"></md-checkbox>
+`;
         var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=" "]) +"\"") : "";
 	var html = String.raw`
-<style>
-.nr-list-icon {
-  margin-top: 6px !important;
-  margin-bottom: 22px !important;
-}
-</style>
 <md-list>
-    <md-list-item aria-label="{{item.desc}}" ` +class_decl +String.raw` ng-repeat="item in items()" `
+    <md-list-item aria-label="{{item.desc}}" ` +class_decl +String.raw` ng-repeat="item in msg.items" `
 	    +(allowClick ? click : "")
 	    +String.raw`>`
             +icon
             +body
+            +(allowCheck ? checkbox : "")
             + String.raw`
    </md-list-item>
 </md-list>
@@ -99,20 +99,12 @@ module.exports = function(RED) {
                 beforeEmit: function(msg, value) {
                     return { msg: { items: value } };
                 },
-                // needs beforeSend to message contents to be sent back to runtime 
                 beforeSend: function (msg, orig) {
                     if (orig) {
                         return orig.msg;
                     }
                 },
                 initController: function($scope, events) {
-                    $scope.items = function() {
-                        var items = [];
-                        if ($scope.msg && $scope.msg.hasOwnProperty("items")) {
-                            items = $scope.msg.items;
-                        }
-                        return items;
-                    };
                     $scope.click = function(item) {
                         $scope.send({payload: item});
                     };
