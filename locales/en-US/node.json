@@ -6,7 +6,6 @@
             "name" : "Name",
             "list" : "List Type",
             "action" : "Action",
-            "click" : "Clicking an item sends it to output port",
             "html" : "Allow HTML in displayed text"
         },
         "type" : {

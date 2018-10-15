@@ -29,7 +29,7 @@ module.exports = function(RED) {
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
         var classes = line_class ? [line_class] : [];
-	var click = String.raw`ng-click="click(item)"`;
+        var click = String.raw`ng-click="click(item)"`;
         var title = (allowHTML ? String.raw`<span ng-bind-html="item.title"></span>` : String.raw`{{item.title}}`);
         var desc = (allowHTML ? String.raw`<span ng-bind-html="item.description"></span>` : String.raw`{{item.description}}`);
         var icon = String.raw`
@@ -55,7 +55,7 @@ module.exports = function(RED) {
         <md-checkbox class="md-secondary" ng-model="item.isChecked" ng-change="click(item)"></md-checkbox>
 `;
         var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=" "]) +"\"") : "";
-	var html = String.raw`
+        var html = String.raw`
 <md-list>
     <md-list-item aria-label="{{item.desc}}" ${class_decl} ng-repeat="item in msg.items" ${(allowClick ? click : "")}>
 ${icon}
@@ -64,7 +64,7 @@ ${(allowCheck ? checkbox : "")}
    </md-list-item>
 </md-list>
 `;
-	return html;
+        return html;
     };
 
     var ui = undefined;
@@ -75,7 +75,7 @@ ${(allowCheck ? checkbox : "")}
                 ui = RED.require("node-red-dashboard")(RED);
             }
             RED.nodes.createNode(this, config);
-	    var html = HTML(config);
+            var html = HTML(config);
             var done = ui.addWidget({
                 node: node,
                 width: config.width,
