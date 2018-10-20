@@ -10,8 +10,8 @@
         },
         "type" : {
             "one" : "Single-line",
-            "two" : "Two-line",
-            "three" : "Three-line"
+            "two" : "Multi-line - narrow",
+            "three" : "Multi-line - wide"
         },
         "action" : {
             "none" : "no action",
