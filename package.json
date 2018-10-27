@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-ui_list",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Node-RED UI widget node for simple list",
     "main": "ui_list.js",
     "node-red": {
