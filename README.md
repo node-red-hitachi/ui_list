@@ -13,6 +13,30 @@ Run the following command in your Node-RED user directory - typically `~/.node-r
 
         npm install node-red-contrib-ui_list
 
+Usage
+-----
+
+`ui_list` node is a UI widget that can be used to display list of items in Node-RED dashboard. 
+
+Items array is passed by `msg.payload`.  It consists of objects containing following properties.
+
+- `title` - title of the item,
+- `description` - description of the item. optional if line type is `Single-line`,
+- `icon` - URL of icon (optional),
+- `icon_name` - font icon name (optional).
+
+Type of item display can be selected by `List Type` selector of node settings UI.
+
+An action to be taken for a displayed item can be selected by `Action` selector:
+
+- `none` - No action is performed,
+- `click to send an item` - sends the selected item to output port if clicked,
+- `checkbox to select items` - sends an item to output port if checkbox is changed.  Checkbox state is included in `isChecked` flag of outputted `payload` object.
+
+If `Allow HTML in displayed text` checkbox is selected, HTML tags can be used in `title` and `description`.
+
+Icon can be specified by `icon` or `icon_name` property.  `icon` specifies URL of icon image.  If `icon` is `null`, blank icon is displeyed. `icon_name` specifies icon name of font icons (e.g. `fa-home`). `icon` has precedence over `icon_name`.
+
 Example
 -------
 
