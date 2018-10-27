@@ -3,8 +3,7 @@ node-red-contrib-ui_list
 
 Node-RED widget node for showing items list.
 
-![Example](figs/sample00.png)
-
+![Example](https://github.com/node-red-hitachi/ui_list/raw/master/figs/sample00.png)
 
 Install
 -------
