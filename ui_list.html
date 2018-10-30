@@ -92,66 +92,58 @@
 </script>
 
 <script type="text/javascript">
-    function mk_conf(NAME) {
+    RED.nodes.registerType("ui_list", {
+        category: 'dashboard',
+        color: 'rgb( 63, 173, 181)',
+        defaults: {
+            group: {type: 'ui_group', required:true},
+            name: {value: ''},
+            order: {value: 0},
+            width: {
+                value: 0,
+                validate: function(v) {
+                    var valid = true
+                    var width = v||0;
+                    var currentGroup = $('#node-input-group').val()|| this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error",!valid);
+                    return valid;
+                }},
+            height: {value: 0},
+            lineType: {value: "two" },
+            actionType: {value: "none" },
+            allowHTML: {value: false}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "icon.png",
+        paletteLabel: "list",
+        label: function() { return this.name || "list"; },
+        oneditprepare: function() {
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
 
-        var ICON = "icon.png";
+            $("#type-select").change(function() {
+                var val = $("#type-select").val();
+                $("#node-input-lineType").val(val);
+            });
+            $("#type-select").val(this.lineType);
+            $("#type-select").change();
 
-        var conf = {
-            category: 'dashboard',
-            color: 'rgb( 63, 173, 181)',
-            defaults: {
-                group: {type: 'ui_group', required:true},
-                name: {value: ''},
-                order: {value: 0},
-                width: {
-                    value: 0,
-                    validate: function(v) {
-                        var valid = true
-                        var width = v||0;
-                        var currentGroup = $('#node-input-group').val()|| this.group;
-                        var groupNode = RED.nodes.node(currentGroup);
-                        valid = !groupNode || +width <= +groupNode.width;
-                        $("#node-input-size").toggleClass("input-error",!valid);
-                        return valid;
-                    }},
-                height: {value: 0},
-                lineType: {value: "two" },
-                actionType: {value: "none" },
-                allowHTML: {value: false}
-            },
-            inputs:1,
-            outputs:1,
-            icon: ICON,
-            paletteLabel: NAME,
-            label: function() { return this.name || NAME; },
-            oneditprepare: function() {
-                $("#node-input-size").elementSizer({
-                    width: "#node-input-width",
-                    height: "#node-input-height",
-                    group: "#node-input-group"
-                });
-
-                $("#type-select").change(function() {
-                    var val = $("#type-select").val();
-                    $("#node-input-lineType").val(val);
-                });
-                $("#type-select").val(this.lineType);
-                $("#type-select").change();
-
-                $("#action-select").change(function() {
-                    var val = $("#action-select").val();
-                    $("#node-input-actionType").val(val);
-                });
-                $("#action-select").val(this.actionType);
-                $("#action-select").change();
-            },
-            oneditsave: function() {
-            },
-            oneditresize: function(size) {
-            }
-        };
-        return conf;
-    };
-
-    RED.nodes.registerType("ui_list", mk_conf("list"));
+            $("#action-select").change(function() {
+                var val = $("#action-select").val();
+                $("#node-input-actionType").val(val);
+            });
+            $("#action-select").val(this.actionType);
+            $("#action-select").change();
+        },
+        oneditsave: function() {
+        },
+        oneditresize: function(size) {
+        }
+    });
 </script>
