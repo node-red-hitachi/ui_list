@@ -12,6 +12,8 @@ Run the following command in your Node-RED user directory - typically `~/.node-r
 
         npm install node-red-contrib-ui_list
 
+*This node uses APIs that are supported from Node-RED 0.19 & Node-RED Dashboard 2.10.*
+
 Usage
 -----
 
