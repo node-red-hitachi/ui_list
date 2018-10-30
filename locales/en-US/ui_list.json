@@ -17,6 +17,9 @@
             "none" : "no action",
             "click" : "click to send item",
             "check" : "checkbox to send changed item"
+        },
+        "error": {
+            "no-group": "group not configured"
         }
     }
 }

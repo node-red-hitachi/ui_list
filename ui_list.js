@@ -21,6 +21,14 @@ module.exports = function(RED) {
         "three" : "md-3-line"
     };
 
+    function checkConfig(node, conf) {
+        if (!conf || !conf.hasOwnProperty("group")) {
+            node.error(RED._("ui_list.error.no-group"));
+            return false;
+        }
+        return true;
+    }
+
     function HTML(config) {
         var actionType = config.actionType;
         var allowClick = (actionType === "click");
@@ -75,39 +83,46 @@ ${(allowCheck ? checkbox : "")}
                 ui = RED.require("node-red-dashboard")(RED);
             }
             RED.nodes.createNode(this, config);
-            var html = HTML(config);
-            var done = ui.addWidget({
-                node: node,
-                width: config.width,
-                height: config.height,
-                format: html,
-                templateScope: "local",
-                group: config.group,
-                emitOnlyNewValues: false,
-                forwardInputMessages: false,
-                storeFrontEndInputAsState: false,
-                convertBack: function (value) {
-                    return value;
-                },
-                beforeEmit: function(msg, value) {
-                    return { msg: { items: value } };
-                },
-                beforeSend: function (msg, orig) {
-                    if (orig) {
-                        return orig.msg;
+            var done = null;
+            if (checkConfig(node, config)) {
+                var html = HTML(config);
+                done = ui.addWidget({
+                    node: node,
+                    width: config.width,
+                    height: config.height,
+                    format: html,
+                    templateScope: "local",
+                    group: config.group,
+                    emitOnlyNewValues: false,
+                    forwardInputMessages: false,
+                    storeFrontEndInputAsState: false,
+                    convertBack: function (value) {
+                        return value;
+                    },
+                    beforeEmit: function(msg, value) {
+                        return { msg: { items: value } };
+                    },
+                    beforeSend: function (msg, orig) {
+                        if (orig) {
+                            return orig.msg;
+                        }
+                    },
+                    initController: function($scope, events) {
+                        $scope.click = function(item) {
+                            $scope.send({payload: item});
+                        };
                     }
-                },
-                initController: function($scope, events) {
-                    $scope.click = function(item) {
-                        $scope.send({payload: item});
-                    };
-                }
-            });
+                });
+            }
         }
         catch (e) {
             console.log(e);
         }
-        node.on("close", done);
+        node.on("close", function() {
+            if (done) {
+                done();
+            }
+        });
     }
     RED.nodes.registerType('ui_list', ListNode);
 };
