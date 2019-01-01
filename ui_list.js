@@ -15,12 +15,14 @@
  **/
 
 module.exports = function(RED) {
+    // map: input type -> md-list-item class
     var line2class = {
         "one" : null,
         "two" : "md-2-line",
         "three" : "md-3-line"
     };
 
+    // check required configuration
     function checkConfig(node, conf) {
         if (!conf || !conf.hasOwnProperty("group")) {
             node.error(RED._("ui_list.error.no-group"));
@@ -29,10 +31,22 @@ module.exports = function(RED) {
         return true;
     }
 
+    // generate HTML/Angular code for ui_list widget based on node
+    // configuration.
+    // Basic structure of generated code is as follows:
+    //   <md-list>
+    //       <md-list-item ng-repeat="item in msg.items" ...>
+    //         specification of list item according to setting options
+    //       </md-list-item>
+    //   </md-list>
+    // It uses ng-repeat of Angular in order to repeat over items in
+    // a list pointed by msg.items sent from Node-RED backend.
+    //
     function HTML(config) {
         var actionType = config.actionType;
         var allowClick = (actionType === "click");
         var allowCheck = (actionType === "check");
+        var allowSwitch = (actionType === "switch");
         var allowHTML = config.allowHTML;
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
@@ -59,8 +73,11 @@ module.exports = function(RED) {
         </div>
 `;
         }
-        var checkbox = String.raw`
+        var md_checkbox = String.raw`
         <md-checkbox class="md-secondary" ng-model="item.isChecked" ng-change="click(item)"></md-checkbox>
+`;
+        var md_switch = String.raw`
+        <md-switch class="md-secondary" ng-model="item.isChecked" ng-change="click(item)"></md-switch>
 `;
         var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=" "]) +"\"") : "";
         var html = String.raw`
@@ -68,31 +85,46 @@ module.exports = function(RED) {
     <md-list-item aria-label="{{item.desc}}" ${class_decl} ng-repeat="item in msg.items" ${(allowClick ? click : "")}>
 ${icon}
 ${body}
-${(allowCheck ? checkbox : "")}
+${(allowCheck ? md_checkbox : "")}
+${(allowSwitch ? md_switch : "")}
    </md-list-item>
 </md-list>
 `;
         return html;
     };
 
+    // Holds a reference to node-red-dashboard module.
+    // Initialized at #1.
     var ui = undefined;
+
+    // Node initialization function
     function ListNode(config) {
         try {
             var node = this;
             if(ui === undefined) {
+                // #1: Load node-red-dashboard module.
+                // Should use RED.require API to cope with loading different
+                // module.  And it should also be executed at node
+                // initialization time to be loaded after initialization of
+                // node-red-dashboard module.
+                // 
                 ui = RED.require("node-red-dashboard")(RED);
             }
+            // Initialize node
             RED.nodes.createNode(this, config);
             var done = null;
             if (checkConfig(node, config)) {
+                // Generate HTML/Angular code
                 var html = HTML(config);
+                // Initialize Node-RED Dashboard widget
+                // see details: https://github.com/node-red/node-red-ui-nodes/blob/master/docs/api.md
                 done = ui.addWidget({
-                    node: node,
-                    width: config.width,
-                    height: config.height,
-                    format: html,
-                    templateScope: "local",
-                    group: config.group,
+                    node: node,			// controlling node
+                    width: config.width,	// width of widget
+                    height: config.height,	// height of widget
+                    format: html,		// HTML/Angular code
+                    templateScope: "local",	// scope of HTML/Angular(local/global)*
+                    group: config.group,	// belonging Dashboard group
                     emitOnlyNewValues: false,
                     forwardInputMessages: false,
                     storeFrontEndInputAsState: false,
@@ -100,6 +132,7 @@ ${(allowCheck ? checkbox : "")}
                         return value;
                     },
                     beforeEmit: function(msg, value) {
+                        // make msg.payload accessible as msg.items in widget
                         return { msg: { items: value } };
                     },
                     beforeSend: function (msg, orig) {
@@ -108,6 +141,8 @@ ${(allowCheck ? checkbox : "")}
                         }
                     },
                     initController: function($scope, events) {
+                        // initialize $scope.click to send clicked widget item
+                        // used as ng-click="click(item)"
                         $scope.click = function(item) {
                             $scope.send({payload: item});
                         };
@@ -120,9 +155,11 @@ ${(allowCheck ? checkbox : "")}
         }
         node.on("close", function() {
             if (done) {
+                // finalize widget on close
                 done();
             }
         });
     }
+    // register ui_list node
     RED.nodes.registerType('ui_list', ListNode);
 };
