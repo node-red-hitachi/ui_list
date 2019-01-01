@@ -47,6 +47,7 @@ module.exports = function(RED) {
         var allowClick = (actionType === "click");
         var allowCheck = (actionType === "check");
         var allowSwitch = (actionType === "switch");
+        var allowMenu = (actionType === "menu");
         var allowHTML = config.allowHTML;
         var line_type = config.lineType;
         var line_class = line2class[config.lineType];
@@ -79,6 +80,20 @@ module.exports = function(RED) {
         var md_switch = String.raw`
         <md-switch class="md-secondary" ng-model="item.isChecked" ng-change="click(item)"></md-switch>
 `;
+        var md_menu = String.raw`
+        <md-menu class="md-secondary">
+            <md-button>
+                <span style="float: right"><i class="fa fa-list"></i></span>
+            </md-button>
+            <md-menu-content>
+                <md-menu-item ng-repeat="menu_item in item.menu">
+                    <md-button ng-click="click(item, menu_item)">
+                      {{menu_item}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+`;
         var class_decl = (classes.length > 0) ? ("class=\"" +classes.join([separator=" "]) +"\"") : "";
         var html = String.raw`
 <md-list>
@@ -87,6 +102,7 @@ ${icon}
 ${body}
 ${(allowCheck ? md_checkbox : "")}
 ${(allowSwitch ? md_switch : "")}
+${(allowMenu ? md_menu : "")}
    </md-list-item>
 </md-list>
 `;
@@ -142,8 +158,11 @@ ${(allowSwitch ? md_switch : "")}
                     },
                     initController: function($scope, events) {
                         // initialize $scope.click to send clicked widget item
-                        // used as ng-click="click(item)"
-                        $scope.click = function(item) {
+                        // used as ng-click="click(item, selected)"
+                        $scope.click = function(item, selected) {
+                            if (selected) {
+                                item.selected = selected;
+                            }
                             $scope.send({payload: item});
                         };
                     }

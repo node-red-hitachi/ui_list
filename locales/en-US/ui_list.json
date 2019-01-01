@@ -17,7 +17,8 @@
             "none" : "no action",
             "click" : "click to send item",
             "check" : "checkbox to send changed item",
-            "switch" : "switch to send changed item"
+            "switch" : "switch to send changed item",
+            "menu" : "menu to send selected item"
         },
         "error": {
             "no-group": "group not configured"
