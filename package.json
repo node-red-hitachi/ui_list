@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-ui_list",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Node-RED UI widget node for simple list",
     "author" : "Hiroyasu Nishiyama",
     "license": "Apache",
@@ -12,7 +12,7 @@
     },
     "repository" : {
         "type" : "git",
-        "url": "https://github.com/node-red-hitachi/ui_list"
+        "url": "https://github.com/node-red/node-red-ui-nodes/ui_list"
     },
     "keywords": [
         "node-red",
