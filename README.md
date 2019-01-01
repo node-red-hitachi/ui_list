@@ -22,7 +22,8 @@ Usage
 Items array is passed by `msg.payload`.  It consists of objects containing following properties.
 
 - `title` - title of the item,
-- `description` - description of the item. optional if line type is `Single-line`,
+- `description` - description of the item. optional if line type is `Single-line ` or action type is `menu`,
+- `menu` - list of menu items (optional),
 - `icon` - URL of icon (optional),
 - `icon_name` - font icon name (optional).
 
@@ -32,8 +33,9 @@ An action to be taken for a displayed item can be selected by `Action` selector:
 
 - `none` - No action is performed,
 - `click to send an item` - sends the selected item to output port if clicked,
-- `checkbox to select items` - sends an item to output port if checkbox is changed.  Checkbox state is included in `isChecked` flag of outputted `payload` object.
-- `switch to select items` - sends an item to output port if switch is changed.  Switch state is included in `isChecked` flag of outputted `payload` object.
+- `checkbox to send changed item` - sends an item to output port if checkbox is changed.  Checkbox state is included in `isChecked` flag of outputted `payload` object,
+- `switch to send changed item` - sends an item to output port if switch is changed.  Switch state is included in `isChecked` flag of outputted `payload` object,
+- `menu to send selected item` - sends an item to output port is item in menu is selected.  Selected item is included in `selected` property of outputted payload object.
 
 If `Allow HTML in displayed text` checkbox is selected, HTML tags can be used in `title` and `description`.
 
@@ -221,7 +223,7 @@ Example
         "name": "",
         "order": 3,
         "width": "4",
-        "height": "3",
+        "height": "4",
         "lineType": "one",
         "actionType": "switch",
         "allowHTML": false,
@@ -239,7 +241,7 @@ Example
         "z": "ee47c5e8.e17bd",
         "name": "Drink",
         "topic": "",
-        "payload": "[{\"title\":\"Coffee\",\"isChecked\":true},{\"title\":\"Tea\",\"isChecked\":false}]",
+        "payload": "[{\"title\":\"Coffee\",\"isChecked\":true},{\"title\":\"Tea\",\"isChecked\":false},{\"title\":\"Green Tea\",\"isChecked\":true}]",
         "payloadType": "json",
         "repeat": "",
         "crontab": "",
@@ -265,6 +267,60 @@ Example
         "complete": "false",
         "x": 450,
         "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f577f7cb.d19068",
+        "type": "ui_list",
+        "z": "ee47c5e8.e17bd",
+        "group": "7e4c65d6.0419cc",
+        "name": "",
+        "order": 3,
+        "width": "6",
+        "height": "2",
+        "lineType": "one",
+        "actionType": "menu",
+        "allowHTML": false,
+        "x": 290,
+        "y": 420,
+        "wires": [
+            [
+                "ad3b8b.58131c78"
+            ]
+        ]
+    },
+    {
+        "id": "f0859d08.93b8a8",
+        "type": "inject",
+        "z": "ee47c5e8.e17bd",
+        "name": "Move",
+        "topic": "",
+        "payload": "[{\"title\":\"Direction\",\"menu\":[\"East\",\"West\",\"South\",\"North\"]},{\"title\":\"Speed\",\"menu\":[\"High\",\"Middle\",\"Low\"]}]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 110,
+        "y": 420,
+        "wires": [
+            [
+                "f577f7cb.d19068"
+            ]
+        ]
+    },
+    {
+        "id": "ad3b8b.58131c78",
+        "type": "debug",
+        "z": "ee47c5e8.e17bd",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 450,
+        "y": 420,
         "wires": []
     },
     {
