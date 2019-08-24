@@ -5,6 +5,8 @@ Node-RED widget node for showing items list.
 
 ![Example](figs/sample00.png)
 
+*This package is deprecated.  Latest version can be obtained from [here](https://github.com/node-red/node-red-ui-nodes/tree/master/node-red-node-ui-list).*
+
 Install
 -------
 
